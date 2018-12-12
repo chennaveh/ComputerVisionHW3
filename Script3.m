@@ -49,6 +49,13 @@ for scale=0.3:0.2:0.8
     end
 end
 
+%% Part B
+
+th=3;
+binMap = seg_OF_magnitude(U,V,th);
+imshow(binMap,[]);
+
+
 %%
 %write avi file:
 
