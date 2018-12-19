@@ -1,13 +1,13 @@
 %Script HW3
 clear all;clc;
-vid = VideoReader('DATA-Set-A-2018\SLIDE.avi');
+vid = VideoReader('DATA-Set-B-2018\cars5.avi');
 mov=read(vid);
 
 %Lucas-Kanade Params:
 windowsSize=2;
 FrameDistance = 2;
 
-currAxes = axes;
+%currAxes = axes;
 %running the OF with different params (windowSize, FrameDistance, Different
 %pairs)
 for scale=0.3:0.2:0.8
@@ -37,23 +37,31 @@ for scale=0.3:0.2:0.8
                 
                 %Part A q.6 - Evaluation
                 D2d = zeros(size(im,1),size(im,2),2);
-                D2d(:,:,2) = U_median; %TODO - check the index here
-                D2d(:,:,1) = V_median; %TODO - check the index here
+                D2d(:,:,1) = U_median; %TODO - check the index here
+                D2d(:,:,2) = V_median; %TODO - check the index here
                 newFrame = imwarp(im,D2d);
                 
                 %SumDiffereance = sum(abs(im-newFrame),'all');
-                %imshowpair(im,im2); %TODO - arrange here
-                %imshowpair(im,newFrame);
+                figure;
+                imshowpair(im,im2); 
+                title(['Frame #' num2str(i) ', differ from frame # ' num2str(i+j)]);
+                figure
+                imshowpair(im,newFrame); %TODO - arrange here
+                title(['Frame #' num2str(i) ', and OF relate to frame # ' num2str(i+j) ', win size=' num2str(w)]);
+            
+            
+                %% Part B
+
+                th=3;
+                binMap = seg_OF_magnitude(U,V,th);
+                imshow(binMap,[]);
+                title(['Frame #' num2str(i) ', and relate to frame # ' num2str(i+j) ', win size=' num2str(w)]);
             end
         end
     end
 end
 
-%% Part B
 
-th=3;
-binMap = seg_OF_magnitude(U,V,th);
-imshow(binMap,[]);
 
 
 %%
