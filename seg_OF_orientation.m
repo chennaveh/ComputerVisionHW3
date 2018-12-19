@@ -4,11 +4,7 @@ function [binMap] = seg_OF_orientation(U,V,th)
 %Output: a binary map.
 
 binMap = atan(U ./ V);
-binMap = bwlabel(binMap); 
-
-
-
-%find?? in order to indicate each area with different color
-%???Note that any segmentation should be a connected component.???
+Idx = kmeans(binMap(:),360/th);
+binMap = reshape(Idx,size(U));
 
 end

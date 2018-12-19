@@ -4,14 +4,14 @@ vid = VideoReader('DATA-Set-B-2018\cars5.avi');
 mov=read(vid);
 
 %Lucas-Kanade Params:
-windowsSize=2;
+windowsSize=3;
 FrameDistance = 2;
 
 %currAxes = axes;
 %running the OF with different params (windowSize, FrameDistance, Different
 %pairs)
 for scale=0.3:0.2:0.8
-    for w=windowsSize:4
+    for w=windowsSize:8
         for j=FrameDistance:10:30
             for i=1:20:size(mov,4)-j
                 im=rgb2gray(mov(:,:,:,i)); %covert to gray scale
@@ -55,7 +55,14 @@ for scale=0.3:0.2:0.8
                 th=3;
                 binMap = seg_OF_magnitude(U,V,th);
                 imshow(binMap,[]);
-                title(['Frame #' num2str(i) ', and relate to frame # ' num2str(i+j) ', win size=' num2str(w)]);
+                title(['Seg_Mag:Frame #' num2str(i) ', and relate to frame # ' num2str(i+j) ', win size=' num2str(w)]);
+                
+                th=8;
+                binMap = seg_OF_orientation(U,V,th);
+                imshow(binMap,[]);
+                title(['Seg_Orientation:Frame #' num2str(i) ', and relate to frame # ' num2str(i+j) ', win size=' num2str(w)]);
+                
+                
             end
         end
     end

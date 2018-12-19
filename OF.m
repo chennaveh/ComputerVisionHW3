@@ -14,7 +14,7 @@ mask_size = round(2 * Sigma_S) + 1;
 G_dx = Deriv_Gauss_x(Sigma_S, mask_size);
 G_dy = Deriv_Gauss_y(Sigma_S, mask_size);
 
-Ix_m = conv2(F1,G_dx, 'same'); % derivetive on x
+Ix_m = conv2(F1,G_dx, 'same'); % derivetive on x - TODO we receive here really large values
 Iy_m = conv2(F1,G_dy, 'same'); % derivetive on y
 %It_m = conv2(F1, ones(2), 'same') + conv2(F2, -ones(2), 'same'); % derivetive on t
 It_m = F1-F2; % derivetive on t
@@ -48,8 +48,8 @@ end
 
 function [output] = PadMatrix(matrix2pad, window)
 % generate new image with enhanced values
-padded = zeros(size(matrix2pad,1)+ window,size(matrix2pad,2)+ window); % pad zero frame
-padded(window:end-window+1, window:end-window+1) = matrix2pad;
+padded = zeros(size(matrix2pad,1)+ 2*window,size(matrix2pad,2)+ 2*window); % pad zero frame
+padded(window:end-window-1, window:end-window-1) = matrix2pad;
 output=padded;
 end
 
