@@ -79,3 +79,21 @@ end
 % open(vidObj);
 % for i=1:10, writeVideo(vidObj,seq3(:,:,:,i)); end
 % close(vidObj);
+%% PART C
+clear all;clc;
+input_vid = VideoReader('DATA-Set-A-2018\SLIDE.avi');
+mov=read(input_vid);
+seq = zeros(size(mov,1), size(mov,2), size(mov,4));
+for i=1:size(mov, 4)
+    seq(:,:,i) = rgb2gray(mov(:,:,:,i));
+end
+th = 15;
+output_mask = change_detection(seq, th);
+
+% save results
+SaveVideo(uint8(output_mask .* seq), 'CD_results_hole_filling_median_filter', input_vid.FrameRate);
+
+
+
+disp('Done');
+
