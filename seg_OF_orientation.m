@@ -3,7 +3,7 @@ function [binMap] = seg_OF_orientation(U,V,th)
 %Th: is a threshold
 %Output: a binary map.
 
-binMap = atan(U ./ V);
+binMap = atan(V ./ U);
 Idx = kmeans(binMap(:),360/th);
 binMap = reshape(Idx,size(U));
 
