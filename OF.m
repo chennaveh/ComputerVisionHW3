@@ -17,7 +17,7 @@ G_dy = Deriv_Gauss_y(Sigma_S, mask_size);
 Ix_m = conv2(F1,G_dx, 'same'); % derivetive on x - TODO we receive here really large values
 Iy_m = conv2(F1,G_dy, 'same'); % derivetive on y
 %It_m = conv2(F1, ones(2), 'same') + conv2(F2, -ones(2), 'same'); % derivetive on t
-It_m = F1-F2; % derivetive on t
+It_m = F2-F1; % derivetive on t
 
 
 Ix_m=PadMatrix(Ix_m,Region);
