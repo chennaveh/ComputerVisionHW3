@@ -10,17 +10,13 @@ U = zeros(size(F1));
 V = zeros(size(F1));
 
 % calculate derivatives
-%mask_size = round(2 * Sigma_S) + 1;
-%G_dx = Deriv_Gauss_x(Sigma_S, mask_size);
-%G_dy = Deriv_Gauss_y(Sigma_S, mask_size);
+mask_size = round(2 * Sigma_S) + 1;
+G_dx = Deriv_Gauss_x(Sigma_S, mask_size);
+G_dy = Deriv_Gauss_y(Sigma_S, mask_size);
 
-%Ix_m = conv2(F1,G_dx, 'same'); % derivetive on x - TODO we receive here really large values
-%Iy_m = conv2(F1,G_dy, 'same'); % derivetive on y
-Ix_m = conv2(F1,[-1 1; -1 1], 'same'); % derivetive on x
-Iy_m = conv2(F1, [-1 -1; 1 1], 'same'); % derivetive on y
-%It_m = conv2(F1, ones(2), 'same') + conv2(F2, -ones(2), 'same'); % derivetive on t
+Ix_m = conv2(F1,G_dx, 'same'); % derivetive on x
+Iy_m = conv2(F1,G_dy, 'same'); % derivetive on y
 It_m = F2-F1; % derivetive on t
-
 
 Ix_m=PadMatrix(Ix_m,Region);
 Iy_m=PadMatrix(Iy_m,Region);
@@ -34,17 +30,12 @@ for j=1:H
         A = [Ix_m_temp(:) Iy_m_temp(:)]; % define A
         
         %calc pinv(A) with weights matrix A+ = (A'A)^-1*A'
-        %C = imgaussfilt(A'*A,Sigma_S);
-        %C = pinv(A'*A); %TODO - need to add W
-        C=pinv(A)*b(:);
-        uv = C;
-        %if det(C)-trace(C)>th %in order to optimize the running
-%         if rank(C)==2
-%             uv = C;
-%             %uv = C*A'*b(:); % get velocity here
-%         else
-%             error("rank smaller then 2")
-%         end
+        C = pinv(A'*A); %TODO - need to add W
+        %C=pinv(A)*b(:);
+        uv=[0,0];
+        if rank(C)==2
+            uv = C*A'*b(:); % get velocity here
+        end
         U(j,i)=uv(1);
         V(j,i)=uv(2);
     end

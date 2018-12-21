@@ -4,19 +4,16 @@ vid = VideoReader('DATA-Set-A-2018\SLIDE.avi');
 mov=read(vid);
 
 %Lucas-Kanade Params:
-windowsSize=8;
+windowsSize=2;
 FrameDistance = 2;
 
 %running the OF with different params (windowSize, FrameDistance, Different
 %pairs)
-
 FrameIdx = 1;
-for w=windowsSize:windowsSize+4
-    for j=FrameDistance:1:30
-        for scale=0.3:0.5:0.9
-            opticFlow = opticalFlowLK('NoiseThreshold',0.009); % DELETE THIS !!!!!!
+for scale=0.3:0.5:0.9
+    for w=windowsSize:windowsSize+4
+        for j=FrameDistance:1:30
             for i=1:30:size(mov,4)-j
-                
                 im=rgb2gray(mov(:,:,:,i)); %covert to gray scale
                 im=imresize(im,scale); %resize the image
                 % Raw(:,:,FrameIdx)=im;
@@ -25,11 +22,7 @@ for w=windowsSize:windowsSize+4
                 im2=imresize(im2,scale); %resize the image
                 
                 %%% put here your optical flow results on im and its successive frame using quiver
-                %[U,V]= OF(im,im2, 3, w);
-                
-                t = estimateFlow(opticFlow,im);
-                U = t.Vx;
-                V = t.Vy;
+                [U,V]= OF(im,im2, 8, w);
                 %display results:
                 [X,Y]=meshgrid(1:size(im,2),1:size(im,1));
                 U_median=medfilt2(U,[5 5]);
@@ -58,14 +51,14 @@ for w=windowsSize:windowsSize+4
                 
                 %% Part B
                 
-                th=1;
+                th= 3.8375e-08;
                 binMap = seg_OF_magnitude(U,V,th);
                 figure;
                 imshow(binMap,[]);
                 title(['Seg_Mag:Frame #' num2str(i) ', and relate to frame # ' num2str(i+j) ', win size=' num2str(w)]);
                 
                 %Raw(:,:,FrameIdx)=double(binMap).*double(im);
-                FrameIdx=FrameIdx+1;
+                %FrameIdx=FrameIdx+1;
                 
                 th=90;
                 binMap = seg_OF_orientation(U,V,th);
@@ -80,7 +73,7 @@ for w=windowsSize:windowsSize+4
 end
 
 % save results
-SaveVideo(uint8(Raw), 'OF_results', vid.FrameRate);
+%SaveVideo(uint8(Raw), 'OF_results', vid.FrameRate);
 
 
 %% PART C
