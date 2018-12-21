@@ -33,7 +33,7 @@ for j=1:H
         
         %calc pinv(A) with weights matrix A+ = (A'A)^-1*A'
         %C = imgaussfilt(A'*A,Sigma_S);
-        C = A'*A; %TODO - need to add W
+        C = pinv(A'*A); %TODO - need to add W
         %if det(C)-trace(C)>th %in order to optimize the running
         if rank(C)==2
             uv = C*A'*b(:); % get velocity here

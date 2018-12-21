@@ -1,6 +1,6 @@
 %Script HW3
 clear all;clc;
-vid = VideoReader('DATA-Set-B-2018\cars5.avi');
+vid = VideoReader('DATA-Set-A-2018\SLIDE.avi');
 mov=read(vid);
 
 %Lucas-Kanade Params:
