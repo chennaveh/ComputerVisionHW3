@@ -4,25 +4,32 @@ vid = VideoReader('DATA-Set-A-2018\SLIDE.avi');
 mov=read(vid);
 
 %Lucas-Kanade Params:
-windowsSize=3;
+windowsSize=8;
 FrameDistance = 2;
 
-%currAxes = axes;
 %running the OF with different params (windowSize, FrameDistance, Different
 %pairs)
-for scale=0.3:0.2:0.8
-    for w=windowsSize:8
-        for j=FrameDistance:10:30
-            for i=1:20:size(mov,4)-j
+
+FrameIdx = 1;
+for w=windowsSize:windowsSize+4
+    for j=FrameDistance:1:30
+        for scale=0.3:0.5:0.9
+            opticFlow = opticalFlowLK('NoiseThreshold',0.009); % DELETE THIS !!!!!!
+            for i=1:30:size(mov,4)-j
+                
                 im=rgb2gray(mov(:,:,:,i)); %covert to gray scale
                 im=imresize(im,scale); %resize the image
+                % Raw(:,:,FrameIdx)=im;
                 
                 im2=rgb2gray(mov(:,:,:,i+j)); %covert to gray scale
                 im2=imresize(im2,scale); %resize the image
                 
                 %%% put here your optical flow results on im and its successive frame using quiver
-                [U,V]= OF(im,im2, 3, w);
-
+                %[U,V]= OF(im,im2, 3, w);
+                
+                t = estimateFlow(opticFlow,im);
+                U = t.Vx;
+                V = t.Vy;
                 %display results:
                 [X,Y]=meshgrid(1:size(im,2),1:size(im,1));
                 U_median=medfilt2(U,[5 5]);
@@ -37,28 +44,32 @@ for scale=0.3:0.2:0.8
                 
                 %Part A q.6 - Evaluation
                 D2d = zeros(size(im,1),size(im,2),2);
-                D2d(:,:,1) = U_median; %TODO - check the index here
-                D2d(:,:,2) = V_median; %TODO - check the index here
+                D2d(:,:,1) = U_median;
+                D2d(:,:,2) = V_median;
                 newFrame = imwarp(im,D2d);
                 
-                %SumDiffereance = sum(abs(im-newFrame),'all');
                 figure;
-                imshowpair(im,im2); 
+                imshowpair(im,im2);
                 title(['Frame #' num2str(i) ', differ from frame # ' num2str(i+j)]);
                 figure
                 imshowpair(im,newFrame); %TODO - arrange here
                 title(['Frame #' num2str(i) ', and OF relate to frame # ' num2str(i+j) ', win size=' num2str(w)]);
-            
-            
+                
+                
                 %% Part B
-
-                th=3;
+                
+                th=1;
                 binMap = seg_OF_magnitude(U,V,th);
+                figure;
                 imshow(binMap,[]);
                 title(['Seg_Mag:Frame #' num2str(i) ', and relate to frame # ' num2str(i+j) ', win size=' num2str(w)]);
                 
-                th=8;
+                %Raw(:,:,FrameIdx)=double(binMap).*double(im);
+                FrameIdx=FrameIdx+1;
+                
+                th=90;
                 binMap = seg_OF_orientation(U,V,th);
+                figure;
                 imshow(binMap,[]);
                 title(['Seg_Orientation:Frame #' num2str(i) ', and relate to frame # ' num2str(i+j) ', win size=' num2str(w)]);
                 
@@ -68,17 +79,10 @@ for scale=0.3:0.2:0.8
     end
 end
 
+% save results
+SaveVideo(uint8(Raw), 'OF_results', vid.FrameRate);
 
 
-
-%%
-%write avi file:
-
-% for i=1:10, seq3(:,:,:,i)=imread(sprintf('people2_%d.jpg',i),'jpg'); end;
-% vidObj = VideoWriter('people.avi');
-% open(vidObj);
-% for i=1:10, writeVideo(vidObj,seq3(:,:,:,i)); end
-% close(vidObj);
 %% PART C
 clear all;clc;
 input_vid = VideoReader('DATA-Set-A-2018\SLIDE.avi');
