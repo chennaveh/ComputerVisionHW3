@@ -4,15 +4,15 @@ vid = VideoReader('DATA-Set-A-2018\SLIDE.avi');
 mov=read(vid);
 
 %Lucas-Kanade Params:
-windowsSize=2;
-FrameDistance = 2;
+windowsSize=8;
+FrameDistance = 40;
 
 %running the OF with different params (windowSize, FrameDistance, Different
 %pairs)
 FrameIdx = 1;
 for scale=0.3:0.5:0.9
     for w=windowsSize:windowsSize+4
-        for j=FrameDistance:1:30
+        for j=FrameDistance:1:90
             for i=1:30:size(mov,4)-j
                 im=rgb2gray(mov(:,:,:,i)); %covert to gray scale
                 im=imresize(im,scale); %resize the image
